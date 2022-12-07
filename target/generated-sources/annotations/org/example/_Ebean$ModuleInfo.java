@@ -9,7 +9,7 @@ import io.ebean.config.ModuleInfo;
 import io.ebean.config.ModuleInfoLoader;
 
 @Generated("io.ebean.querybean.generator")
-@ModuleInfo(entities={"org.example.Cliente"})
+@ModuleInfo(entities={"org.example.Cliente","org.example.Receta"})
 public class _Ebean$ModuleInfo implements ModuleInfoLoader {
 
   /**
@@ -25,6 +25,7 @@ public class _Ebean$ModuleInfo implements ModuleInfoLoader {
   private List<Class<?>> defaultEntityClasses() {
     List<Class<?>> entities = new ArrayList<>();
     entities.add(org.example.Cliente.class);
+    entities.add(org.example.Receta.class);
     return entities;
   }
 

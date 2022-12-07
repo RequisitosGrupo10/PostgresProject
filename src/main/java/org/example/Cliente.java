@@ -1,5 +1,10 @@
 package org.example;
+import io.ebean.DB;
+import org.example.query.QCliente;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,9 +20,35 @@ import java.util.Objects;
       this.NOMBRE = NOMBRE;
       this.APELLIDOS = APELLIDOS;
       this.EDAD = EDAD;
+      DB.save(this);
     }
 
-    public void setNOMBRE(String NOMBRE) {
+
+  public Cliente(String nif) {
+      Cliente cliente = new QCliente().NIF.iequalTo(nif).findOne();
+      this.NIF = nif;
+      this.NOMBRE = cliente.getNOMBRE();
+      this.APELLIDOS = cliente.getAPELLIDOS();
+      this.EDAD = cliente.getEDAD();
+  }
+
+  public static List<Cliente> listaClientes() {
+      List<Cliente> res = new QCliente().findList();
+      return res;
+  }
+
+  public static List<Integer> listaEdades() {
+      var cliente = QCliente.alias();
+
+      List<Integer> res = new QCliente()
+              .setDistinct(true)
+              .select(cliente.EDAD)
+              .findSingleAttributeList();
+      return res;
+  }
+
+
+  public void setNOMBRE(String NOMBRE) {
       this.NOMBRE = NOMBRE;
     }
 
@@ -61,11 +92,14 @@ import java.util.Objects;
 
   @Override
     public String toString() {
-      return "Cliente{" +
-        "NIF='" + NIF + '\'' +
-        ", NOMBRE='" + NOMBRE + '\'' +
-        ", APELLIDOS='" + APELLIDOS + '\'' +
-        ", EDAD=" + EDAD +
-        '}';
+      return (NIF + ";" + NOMBRE + ";" + APELLIDOS + ";" + EDAD);
     }
+
+  public void borrar() {
+      DB.delete(this);
+      this.NOMBRE = null;
+      this.NIF = null;
+      this.APELLIDOS = null;
+      this.EDAD = -1;
   }
+}

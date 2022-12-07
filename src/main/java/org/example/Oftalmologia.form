@@ -56,14 +56,6 @@
           <text value="Revision Ocular"/>
         </properties>
       </component>
-      <component id="d3ad9" class="javax.swing.JTable" binding="table1" default-binding="true">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <component id="7e9f0" class="javax.swing.JTextField" binding="tNIF">
         <constraints>
           <grid row="2" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -128,7 +120,7 @@
           <text value="Revisiones"/>
         </properties>
       </component>
-      <component id="8cbb9" class="javax.swing.JList" binding="lEdad">
+      <component id="8cbb9" class="javax.swing.JList" binding="lEdad" custom-create="true">
         <constraints>
           <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
@@ -136,6 +128,21 @@
         </constraints>
         <properties/>
       </component>
+      <scrollpane id="fb094">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title=""/>
+        <children>
+          <component id="d3ad9" class="javax.swing.JTable" binding="table1" custom-create="true" default-binding="true">
+            <constraints/>
+            <properties>
+              <enabled value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>
