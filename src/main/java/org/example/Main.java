@@ -9,7 +9,7 @@ public class Main {
     System.out.println("running ...");
     Database db = DB.getDefault();
 
-    Cliente c = new Cliente("222", "Javier", "Luque", 20);
+    Cliente c = new Cliente("333", "Illya", "Luque", 20);
     DB.insert(c);
 
     //DB.save(c);
