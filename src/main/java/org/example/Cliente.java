@@ -1,7 +1,8 @@
 package org.example;
 import javax.persistence.*;
+import java.util.Objects;
 
-  @Entity
+@Entity
   public class Cliente {
     @Id
     private String NIF;
@@ -45,7 +46,20 @@ import javax.persistence.*;
       return EDAD;
     }
 
-    @Override
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Cliente cliente = (Cliente) o;
+    return NIF.equals(cliente.NIF);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(NIF);
+  }
+
+  @Override
     public String toString() {
       return "Cliente{" +
         "NIF='" + NIF + '\'' +
