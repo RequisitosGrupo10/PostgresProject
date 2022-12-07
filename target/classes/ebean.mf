@@ -1,0 +1,2 @@
+entity-packages: org.example
+transactional-packages: org.example
