@@ -1,7 +1,14 @@
 package org.example;
 
+import io.ebean.DB;
+import org.example.query.QCliente;
+import org.example.query.QReceta;
+import org.example.query.assoc.QAssocReceta;
+
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,8 +26,35 @@ public class Receta {
     private double OI_ADICION;
     private double OI_AGUDEZA;
 
-    public Receta(int ID, String NIF, Date CONSULTA, double OD_ESFERA, double OD_CILINDRO, double OD_ADICION, double OD_AGUDEZA, double OI_ESFERA, double OI_CILINDRO, double OI_ADICION, double OI_AGUDEZA) {
-        this.ID = ID;
+    public Receta(int recetaID) {
+        Receta receta = new QReceta().ID.eq(recetaID).findOne();
+        if (receta==null)
+            throw new RuntimeException("Cita no encontrada");
+        this.ID = recetaID;
+        this.NIF = NIF;
+        this.CONSULTA = receta.CONSULTA;
+        this.OD_ESFERA = receta.OD_ESFERA;
+        this.OD_CILINDRO = receta.OD_CILINDRO;
+        this.OD_ADICION = receta.OD_ADICION;
+        this.OD_AGUDEZA = receta.OD_AGUDEZA;
+        this.OI_ESFERA = receta.OI_ESFERA;
+        this.OI_CILINDRO = receta.OI_CILINDRO;
+        this.OI_ADICION = receta.OI_ADICION;
+        this.OI_AGUDEZA = receta.OI_AGUDEZA;
+    }
+
+    public static List<Receta> listaRecetas() {
+        List<Receta> res = new QReceta().findList();
+        System.out.println(res.get(0).toString());
+        return res;
+    }
+
+    public static List<Receta> listaRecetasCliente(Cliente c){
+        return null;
+        //TODO
+    }
+
+    public Receta(String NIF, Date CONSULTA, double OD_ESFERA, double OD_CILINDRO, double OD_ADICION, double OD_AGUDEZA, double OI_ESFERA, double OI_CILINDRO, double OI_ADICION, double OI_AGUDEZA) {
         this.NIF = NIF;
         this.CONSULTA = CONSULTA;
         this.OD_ESFERA = OD_ESFERA;
@@ -149,5 +183,19 @@ public class Receta {
                 ", OI_ADICION=" + OI_ADICION +
                 ", OI_AGUDEZA=" + OI_AGUDEZA +
                 '}';
+    }
+
+    public void borrar() {
+        DB.delete(this);
+        this.NIF = null;
+        this.CONSULTA = null;
+        this.OD_ESFERA = -1;
+        this.OD_CILINDRO = -1;
+        this.OD_ADICION = -1;
+        this.OD_AGUDEZA = -1;
+        this.OI_ESFERA = -1;
+        this.OI_CILINDRO = -1;
+        this.OI_ADICION = -1;
+        this.OI_AGUDEZA = -1;
     }
 }

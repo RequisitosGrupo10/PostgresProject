@@ -80,7 +80,7 @@
           <text value="OI_ADICION"/>
         </properties>
       </component>
-      <component id="9c260" class="javax.swing.JLabel" binding="tOD_AGUDEZA">
+      <component id="9c260" class="javax.swing.JLabel">
         <constraints>
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -130,7 +130,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="b0595" class="javax.swing.JTextField" binding="textField7" default-binding="true">
+      <component id="b0595" class="javax.swing.JTextField" binding="tOD_AGUDEZA">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
