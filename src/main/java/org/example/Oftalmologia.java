@@ -5,9 +5,12 @@ import org.example.Cliente;
 import org.example.UsuarioTab;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.Vector;
 
 public class Oftalmologia extends JFrame{
     private JButton añadirButton;
@@ -23,6 +26,8 @@ public class Oftalmologia extends JFrame{
     private JTextField tApellidos;
     private JButton revisionesButton;
     private JList lEdad;
+
+    DefaultTableModel model;
 
     private Cliente seleccionado;
 
@@ -49,10 +54,12 @@ public class Oftalmologia extends JFrame{
                     String apellido = tApellidos.getText();
                     Integer edad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
 
-                    Cliente nuevoCliente = new Cliente(nif, nombre, apellido, edad);
-                    // REFRESH TODO, que hay que hacerlo, vaya
+                    seleccionado = new Cliente(nif, nombre, apellido, edad);
+                    seleccionado=null;
+                    model.addRow(new Object[] {nif, nombre, apellido, edad});
+                    mostrarSeleccionado();
                 } catch (Exception ex){
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -63,13 +70,14 @@ public class Oftalmologia extends JFrame{
                         ||tNombre.getText() == null || tApellidos.getText() == null
                         || tNIF.getText() == null|| lEdad.getSelectedIndex() == -1)
                 {
-                    System.out.println("No se puede actualizar si un atributo está sin marcar");
-                    return;
+                    JOptionPane.showMessageDialog(null, "No se puede actualizar si no hay selección", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
 
                 try {
-                    if (!tNombre.getText().equals(seleccionado.getNOMBRE()))
+                    int index = findInTable(seleccionado);
+                    if (!tNombre.getText().equals(seleccionado.getNOMBRE())) {
                         seleccionado.setNOMBRE(tNombre.getText());
+                    }
 
                     if (!tApellidos.getText().equals(seleccionado.getAPELLIDOS()))
                         seleccionado.setAPELLIDOS(tApellidos.getText());
@@ -79,9 +87,13 @@ public class Oftalmologia extends JFrame{
                         seleccionado.setEDAD(seleccionadoEdad);
 
                     DB.update(seleccionado);
+                    model.removeRow(index);
+                    model.insertRow(index,new Object[]{seleccionado.getNIF(),seleccionado.getNOMBRE(),seleccionado.getAPELLIDOS(),seleccionado.getEDAD()});
+                    seleccionado=null;
+                    mostrarSeleccionado();
                 }catch (Exception ex)
                 {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -91,12 +103,17 @@ public class Oftalmologia extends JFrame{
                 if (seleccionado == null)
                     return;
                 seleccionado.borrar();
+
+                model.removeRow(findInTable(seleccionado));
+                seleccionado=null;
+                mostrarSeleccionado();
             }
         });
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clearSelection();
+                seleccionado=null;
+                mostrarSeleccionado();
             }
         });
         revisionesButton.addActionListener(new ActionListener() {
@@ -119,38 +136,27 @@ public class Oftalmologia extends JFrame{
                 int [] data= table1.getSelectedRows();
                 if (data.length == 0)
                 {
-                    clearSelection();
-                    return;
+                    seleccionado = null;
+                }else {
+                    String seleccionadoNIF = table1.getModel().getValueAt(data[0], 0).toString();
+                    seleccionado = new Cliente(seleccionadoNIF);
                 }
-                String seleccionadoNIF = table1.getModel().getValueAt(data[0], 0).toString();
-                seleccionado = new Cliente(seleccionadoNIF);
-                updateTextArea();
+                mostrarSeleccionado();
             }
         });
     }
-
-    private void updateTextArea() {
-        if (seleccionado == null)
-        {
-            clearSelection();
-            return;
+    private int findInTable(Cliente cliente){
+        int i = 0;
+        for (Vector o : model.getDataVector()){
+            if (o.get(0).equals(cliente.getNIF())){
+                break;
+            }
         }
-
-        tNIF.setText(seleccionado.getNIF());
-        tNombre.setText(seleccionado.getNOMBRE());
-        tApellidos.setText(seleccionado.getAPELLIDOS());
+        return i;
     }
-
-    private void clearSelection() {
-        seleccionado = null;
-        tNIF.setText("");
-        tNombre.setText("");
-        tApellidos.setText("");
-        lEdad.clearSelection();
-        table1.clearSelection();
-    }
-
     private void createUIComponents() {
+        model=new DefaultTableModel();
+        model.setColumnIdentifiers(new String[]{"NIF", "NOMBRE", "APELLIDOS", "EDAD"});
         loadTable();
         loadEdades();
     }
@@ -160,17 +166,33 @@ public class Oftalmologia extends JFrame{
     }
 
     private void loadTable() {
-        String[] columnNames = {"NIF", "NOMBRE", "APELLIDOS", "EDAD"};
-        List<Cliente> clientes = Cliente.listaClientes();
-        Object [][]data = new Object[clientes.size()][4];
+        table1 = new JTable(model);
+        table1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        //Borramos las filas insertadas
+
         int i = 0;
-        for (Cliente cliente : clientes) {
-            data[i][0] = cliente.getNIF();
-            data[i][1] = cliente.getNOMBRE();
-            data[i][2] = cliente.getAPELLIDOS();
-            data[i][3] = cliente.getEDAD();
-            i++;
+        for (Cliente cliente : Cliente.listaClientes()) {
+            System.out.println(cliente.getNIF() + cliente.getNOMBRE() + cliente.getAPELLIDOS() + cliente.getEDAD());
+            model.insertRow(i,new Object[]{cliente.getNIF(), cliente.getNOMBRE(), cliente.getAPELLIDOS(), cliente.getEDAD()});
         }
-        table1 = new JTable(data, columnNames);
+    }
+
+    private void loadTable2(){
+
+    }
+
+    private void mostrarSeleccionado(){
+        if (seleccionado!= null){
+            tNIF.setText(seleccionado.getNIF());
+            tNombre.setText(seleccionado.getNOMBRE());
+            tApellidos.setText(seleccionado.getAPELLIDOS());
+            lEdad.setSelectedValue(seleccionado.getEDAD(),true);
+        }else{
+            tNIF.setText("");
+            tNombre.setText("");
+            tApellidos.setText("");
+            lEdad.clearSelection();
+            table1.clearSelection();
+        }
     }
 }
