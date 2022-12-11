@@ -56,6 +56,7 @@ public class Oftalmologia extends JFrame{
 
                     seleccionado = new Cliente(nif, nombre, apellido, edad);
                     seleccionado=null;
+                    //Actualizamos tabla
                     model.addRow(new Object[] {nif, nombre, apellido, edad});
                     mostrarSeleccionado();
                 } catch (Exception ex){
@@ -71,29 +72,29 @@ public class Oftalmologia extends JFrame{
                         || tNIF.getText() == null|| lEdad.getSelectedIndex() == -1)
                 {
                     JOptionPane.showMessageDialog(null, "No se puede actualizar si no hay selección", "ERROR", JOptionPane.ERROR_MESSAGE);
-                }
+                }else {
+                    try {
+                        int index = findInTable(seleccionado);
+                        if (!tNombre.getText().equals(seleccionado.getNOMBRE())) {
+                            seleccionado.setNOMBRE(tNombre.getText());
+                        }
 
-                try {
-                    int index = findInTable(seleccionado);
-                    if (!tNombre.getText().equals(seleccionado.getNOMBRE())) {
-                        seleccionado.setNOMBRE(tNombre.getText());
+                        if (!tApellidos.getText().equals(seleccionado.getAPELLIDOS()))
+                            seleccionado.setAPELLIDOS(tApellidos.getText());
+
+                        Integer seleccionadoEdad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
+                        if (!seleccionadoEdad.equals(seleccionado.getEDAD()))
+                            seleccionado.setEDAD(seleccionadoEdad);
+
+                        DB.update(seleccionado);
+                        model.removeRow(index);
+                        //Actualizamos valor en tabla
+                        model.insertRow(index, new Object[]{seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
+                        seleccionado = null;
+                        mostrarSeleccionado();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
-
-                    if (!tApellidos.getText().equals(seleccionado.getAPELLIDOS()))
-                        seleccionado.setAPELLIDOS(tApellidos.getText());
-
-                    Integer seleccionadoEdad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
-                    if (!seleccionadoEdad.equals(seleccionado.getEDAD()))
-                        seleccionado.setEDAD(seleccionadoEdad);
-
-                    DB.update(seleccionado);
-                    model.removeRow(index);
-                    model.insertRow(index,new Object[]{seleccionado.getNIF(),seleccionado.getNOMBRE(),seleccionado.getAPELLIDOS(),seleccionado.getEDAD()});
-                    seleccionado=null;
-                    mostrarSeleccionado();
-                }catch (Exception ex)
-                {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -103,7 +104,7 @@ public class Oftalmologia extends JFrame{
                 if (seleccionado == null)
                     return;
                 seleccionado.borrar();
-
+                //Actualizamos la tabla
                 model.removeRow(findInTable(seleccionado));
                 seleccionado=null;
                 mostrarSeleccionado();
