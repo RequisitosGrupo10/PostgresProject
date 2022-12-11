@@ -27,7 +27,7 @@ public class Oftalmologia extends JFrame{
     private JButton revisionesButton;
     private JList lEdad;
 
-    DefaultTableModel model;
+    private DefaultTableModel model;
 
     private Cliente seleccionado;
 
@@ -127,6 +127,8 @@ public class Oftalmologia extends JFrame{
                     // Display the window.
                     frame.pack();
                     frame.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null, "No se pueden ver revisiones de un objeto vacío", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -176,10 +178,6 @@ public class Oftalmologia extends JFrame{
             System.out.println(cliente.getNIF() + cliente.getNOMBRE() + cliente.getAPELLIDOS() + cliente.getEDAD());
             model.insertRow(i,new Object[]{cliente.getNIF(), cliente.getNOMBRE(), cliente.getAPELLIDOS(), cliente.getEDAD()});
         }
-    }
-
-    private void loadTable2(){
-
     }
 
     private void mostrarSeleccionado(){

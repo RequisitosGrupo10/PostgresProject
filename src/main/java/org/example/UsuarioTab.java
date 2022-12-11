@@ -1,18 +1,18 @@
 package org.example;
 
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 import io.ebean.DB;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.Date;
 import java.util.List;
 
 public class UsuarioTab extends JFrame{
-    private JTable table1;
+    JTable table1;
     private JTextField tOD_ESFERA;
     private JTextField tOI_ESFERA;
     private JTextField tOD_CILINDROTextField;
@@ -29,16 +29,21 @@ public class UsuarioTab extends JFrame{
     private JTextField tOD_AGUDEZA;
     private JTextField tCliente;
 
-    Cliente cliente;
+    private JDateChooser dateChooser;
+
+    private DefaultTableModel model;
+
+    private Cliente cliente;
 
     private Receta recetaSeleccionada;
 
     public UsuarioTab(Cliente seleccionado)
     {
         super("Registro");
-
         cliente = seleccionado;
         setContentPane(mainPanel);
+
+
         salirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -60,13 +65,14 @@ public class UsuarioTab extends JFrame{
                     double OD_AGUDEZA = Double.parseDouble(tOD_AGUDEZA.getText());
                     double OI_AGUDEZA = Double.parseDouble(tOI_AGUDEZA.getText());
                     String NIF = seleccionado.getNIF();
-                    Date date = new Date(2022,12,8);
+                    Date date = new java.sql.Date(dateChooser.getDate().getTime());
                     Receta nuevaReceta = new Receta(NIF,date,OD_ESFERA,OD_CILINDRO,OD_ADICION,OD_AGUDEZA,OI_ESFERA,OI_CILINDRO,OI_ADICION,OI_AGUDEZA);
-                    // TODO Necesitamos meter el calendario para seleccionar la fecha
 
-                    DB.insert(nuevaReceta);
+                    recetaSeleccionada=null;
+                    mostrarRecetaSeleccionada();
+
                 } catch (Exception ex){
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -78,7 +84,7 @@ public class UsuarioTab extends JFrame{
                 System.out.println("Actualizando cita");
                 if (recetaSeleccionada == null)
                 {
-                    System.out.println("No se puede actualizar si un atributo está sin marcar");
+                    JOptionPane.showMessageDialog(null, "No se puede actualizar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
@@ -102,9 +108,13 @@ public class UsuarioTab extends JFrame{
 
 
                     DB.update(recetaSeleccionada);
+
+                    recetaSeleccionada=null;
+                    mostrarRecetaSeleccionada();
+
                 }catch (Exception ex)
                 {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -113,9 +123,13 @@ public class UsuarioTab extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Borrando cita");
-                if (recetaSeleccionada == null)
+                if (recetaSeleccionada == null) {
+                    JOptionPane.showMessageDialog(null, "No se puede borrar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
+                }
                 recetaSeleccionada.borrar();
+                recetaSeleccionada=null;
+                mostrarRecetaSeleccionada();
             }
         });
 
@@ -123,7 +137,8 @@ public class UsuarioTab extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Limpiando campos");
-                clearSelection();
+                recetaSeleccionada=null;
+                mostrarRecetaSeleccionada();
             }
         });
 
@@ -134,77 +149,71 @@ public class UsuarioTab extends JFrame{
                 int [] data= table1.getSelectedRows();
                 if (data.length == 0)
                 {
-                    clearSelection();
-                    return;
+                    recetaSeleccionada = null;
+                    mostrarRecetaSeleccionada();
+                }else {
+                    int recetaID = (int) table1.getModel().getValueAt(data[0], 0);
+                    System.out.println(recetaID);
+                    recetaSeleccionada = new Receta(recetaID);
+                    mostrarRecetaSeleccionada();
                 }
-                int recetaID = (int) table1.getModel().getValueAt(data[0], 0);
-                recetaSeleccionada = new Receta(recetaID);
-                updateTextArea();
             }
         });
 
+        mainPanel.addComponentListener(new ComponentAdapter() {
+        });
     }
 
-    private void updateTextArea() {
+    private void mostrarRecetaSeleccionada() {
         if (recetaSeleccionada == null)
         {
-            clearSelection();
-            return;
+            tOD_ESFERA.setText("");
+            tOD_ADICION.setText("");
+            tOI_ESFERA.setText("");
+            tOI_ADICION.setText("");
+            tOD_AGUDEZA.setText("");
+            tOI_AGUDEZA.setText("");
+            tOD_CILINDROTextField.setText("");
+            tOI_CILINDRO.setText("");
+        }else {
+
+            tOD_ESFERA.setText(String.valueOf(recetaSeleccionada.getOD_ESFERA()));
+            tOD_ADICION.setText(String.valueOf(recetaSeleccionada.getOD_ADICION()));
+            tOI_ESFERA.setText(String.valueOf(recetaSeleccionada.getOI_ESFERA()));
+            tOI_ADICION.setText(String.valueOf(recetaSeleccionada.getOI_ADICION()));
+            tOD_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOD_AGUDEZA()));
+            tOI_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOI_AGUDEZA()));
+            tOD_CILINDROTextField.setText(String.valueOf(recetaSeleccionada.getOD_CILINDRO()));
+            tOI_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOI_CILINDRO()));
         }
-
-        tOD_ESFERA.setText(String.valueOf(recetaSeleccionada.getOD_ESFERA()));
-        tOD_ADICION.setText(String.valueOf(recetaSeleccionada.getOD_ADICION()));
-        tOI_ESFERA.setText(String.valueOf(recetaSeleccionada.getOI_ESFERA()));
-        tOI_ADICION.setText(String.valueOf(recetaSeleccionada.getOI_ADICION()));
-        tOD_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOD_AGUDEZA()));
-        tOI_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOI_AGUDEZA()));
-        tOD_CILINDROTextField.setText(String.valueOf(recetaSeleccionada.getOD_CILINDRO()));
-        tOI_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOI_CILINDRO()));
-    }
-
-    private void clearSelection() {
-        recetaSeleccionada = null;
-        tOD_ESFERA.setText("");
-        tOD_ADICION.setText("");
-        tOI_ESFERA.setText("");
-        tOI_ADICION.setText("");
-        tOD_AGUDEZA.setText("");
-        tOI_AGUDEZA.setText("");
-        tOD_CILINDROTextField.setText("");
-        tOI_CILINDRO.setText("");
     }
 
     private void createUIComponents() {
+
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd/MM/yyyy");
+
+        model=new DefaultTableModel();
+        model.setColumnIdentifiers(new String[]  {"ID", "NIF", "CONSULTA", "OD_ESFERA", "OD_CILINDRO","OD_ADICION","OD_AGUDEZA", "OI_ESFERA", "OI_CILINDRO","OI_ADICION","OI_AGUDEZA"});
         loadTable();
+
         System.out.println("He terminado de cargar la tabla");
         Font font1 = new Font("SansSerif", Font.BOLD, 20);
 
         tCliente = new JTextField(cliente.toString());
         tCliente.setFont(font1);
-
-        //Set JTextField font using new created font
-
     }
 
     private void loadTable() {
-        String[] columnNames = {"ID", "NIF", "CONSULTA", "OD_ESFERA", "OD_CILINDRO","OD_ADICION","OD_AGUDEZA", "OI_ESFERA", "OI_CILINDRO","OI_ADICION","OI_AGUDEZA"};
-        List<Receta> recetas = Receta.listaRecetas();
-        Object [][]data = new Object[recetas.size()][11];
+        table1 = new JTable();
+        table1.setModel(model);
+        table1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
         int i = 0;
-        for (Receta receta : recetas) {
-            data[i][0] = receta.getID();
-            data[i][1] = receta.getNIF();
-            data[i][2] = receta.getCONSULTA();
-            data[i][3] = receta.getOD_ESFERA();
-            data[i][4] = receta.getOD_CILINDRO();
-            data[i][5] = receta.getOD_ADICION();
-            data[i][6] = receta.getOD_AGUDEZA();
-            data[i][7] = receta.getOI_ESFERA();
-            data[i][8] = receta.getOI_CILINDRO();
-            data[i][9] = receta.getOI_ADICION();
-            data[i][10] = receta.getOI_AGUDEZA();
+        for (Receta receta : Receta.listaRecetasCliente(cliente)) {
+            System.out.println(receta.toString());
+            model.insertRow(i,new Object[]{receta.getID(),receta.getNIF(),receta.getCONSULTA(),receta.getOD_ESFERA(), receta.getOD_CILINDRO(),receta.getOD_ADICION(),receta.getOD_AGUDEZA(),receta.getOI_ESFERA(),receta.getOI_CILINDRO(),receta.getOI_ADICION(),receta.getOI_AGUDEZA()});
             i++;
         }
-        table1 = new JTable(data, columnNames);
     }
 }

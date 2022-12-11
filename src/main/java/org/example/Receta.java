@@ -31,7 +31,7 @@ public class Receta {
         if (receta==null)
             throw new RuntimeException("Cita no encontrada");
         this.ID = recetaID;
-        this.NIF = NIF;
+        this.NIF = receta.NIF;
         this.CONSULTA = receta.CONSULTA;
         this.OD_ESFERA = receta.OD_ESFERA;
         this.OD_CILINDRO = receta.OD_CILINDRO;
@@ -50,8 +50,9 @@ public class Receta {
     }
 
     public static List<Receta> listaRecetasCliente(Cliente c){
-        return null;
-        //TODO
+        return new QReceta()
+                .setDistinct(true).having().NIF.iequalTo(c.getNIF())
+                .findList();
     }
 
     public Receta(String NIF, Date CONSULTA, double OD_ESFERA, double OD_CILINDRO, double OD_ADICION, double OD_AGUDEZA, double OI_ESFERA, double OI_CILINDRO, double OI_ADICION, double OI_AGUDEZA) {
@@ -65,6 +66,7 @@ public class Receta {
         this.OI_CILINDRO = OI_CILINDRO;
         this.OI_ADICION = OI_ADICION;
         this.OI_AGUDEZA = OI_AGUDEZA;
+        DB.save(this);
     }
 
     public int getID() {
