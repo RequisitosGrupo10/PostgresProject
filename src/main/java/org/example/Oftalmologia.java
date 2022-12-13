@@ -1,15 +1,12 @@
 package org.example;
 
 import io.ebean.DB;
-import org.example.Cliente;
-import org.example.UsuarioTab;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.Vector;
 
 public class Oftalmologia extends JFrame{
@@ -26,12 +23,11 @@ public class Oftalmologia extends JFrame{
     private JTextField tApellidos;
     private JButton revisionesButton;
     private JList lEdad;
-
     private DefaultTableModel model;
-
     private Cliente seleccionado;
+    private static Oftalmologia singleton;
 
-    public Oftalmologia() {
+    private Oftalmologia() {
         // Configuración
         super("Revisión Ocular");
         setContentPane(mainPanel);
@@ -82,17 +78,14 @@ public class Oftalmologia extends JFrame{
                         if (!tApellidos.getText().equals(seleccionado.getAPELLIDOS()))
                             seleccionado.setAPELLIDOS(tApellidos.getText());
 
-                        Integer seleccionadoEdad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
-                        if (!seleccionadoEdad.equals(seleccionado.getEDAD()))
+                        int seleccionadoEdad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
+                        if (seleccionadoEdad != seleccionado.getEDAD())
                             seleccionado.setEDAD(seleccionadoEdad);
 
                         DB.update(seleccionado);
-                        model.removeRow(index);
-                        //Actualizamos valor en tabla
-                        model.addRow(new Object[] {seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
-//                        model.insertRow(index, new Object[]{seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
                         seleccionado = null;
                         mostrarSeleccionado();
+                        loadData();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
@@ -111,6 +104,7 @@ public class Oftalmologia extends JFrame{
                 mostrarSeleccionado();
             }
         });
+
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,32 +117,48 @@ public class Oftalmologia extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if (seleccionado != null)
                 {
-                    JFrame frame = new UsuarioTab(seleccionado);
-
-                    // Display the window.
-                    frame.pack();
-                    frame.setVisible(true);
+                    showRecetas();
                 }else{
                     JOptionPane.showMessageDialog(null, "No se pueden ver revisiones de un objeto vacío", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        table1.addMouseListener(new MouseAdapter() {
+
+        table1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void valueChanged(ListSelectionEvent e) {
                 int [] data= table1.getSelectedRows();
                 if (data.length == 0)
                 {
                     seleccionado = null;
                 }else {
-                    String seleccionadoNIF = table1.getModel().getValueAt(data[0], 0).toString();
+                    String seleccionadoNIF = table1.getValueAt(data[0], 0).toString();
                     seleccionado = new Cliente(seleccionadoNIF);
                 }
                 mostrarSeleccionado();
             }
         });
     }
+
+    public static Oftalmologia getInstance(){
+        if(singleton == null){
+            singleton = new Oftalmologia();
+        }
+        return singleton;
+    }
+    private void showRecetas(){
+        JFrame frame = new UsuarioTab(seleccionado);
+
+        // Display the window.
+        frame.pack();
+        frame.setVisible(true);
+        toggleVisibility();
+    }
+
+    public void toggleVisibility() {
+        this.setVisible(!isVisible());
+    }
+
     private int findInTable(Cliente cliente){
         int i = 0;
         for (Vector o : model.getDataVector()){
@@ -173,10 +183,17 @@ public class Oftalmologia extends JFrame{
         table1 = new JTable(model);
         table1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         //Borramos las filas insertadas
+        loadData();
+    }
 
-        int i = 0;
+    private void loadData() {
+        int i = model.getRowCount();
+        while (i > 0){
+            model.removeRow(i-1);
+            i--;
+        }
         for (Cliente cliente : Cliente.listaClientes()) {
-            System.out.println(cliente.getNIF() + cliente.getNOMBRE() + cliente.getAPELLIDOS() + cliente.getEDAD());
+//            System.out.println(cliente.getNIF() + cliente.getNOMBRE() + cliente.getAPELLIDOS() + cliente.getEDAD());
             model.insertRow(i,new Object[]{cliente.getNIF(), cliente.getNOMBRE(), cliente.getAPELLIDOS(), cliente.getEDAD()});
         }
     }
