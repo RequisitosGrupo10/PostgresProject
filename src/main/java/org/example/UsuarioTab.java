@@ -1,6 +1,5 @@
 package org.example;
 
-import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 import io.ebean.DB;
 
@@ -9,13 +8,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Date;
-import java.util.List;
 
 public class UsuarioTab extends JFrame{
     JTable table1;
     private JTextField tOD_ESFERA;
     private JTextField tOI_ESFERA;
-    private JTextField tOD_CILINDROTextField;
+    private JTextField tOD_CILINDRO;
     private JTextField tOI_CILINDRO;
     private JTextField tOI_ADICION;
     private JTextField tOD_ADICION;
@@ -58,7 +56,7 @@ public class UsuarioTab extends JFrame{
                 try {
                     double OD_ESFERA = Double.parseDouble(tOD_ESFERA.getText());
                     double OI_ESFERA = Double.parseDouble(tOI_ESFERA.getText());
-                    double OD_CILINDRO = Double.parseDouble(tOD_CILINDROTextField.getText());
+                    double OD_CILINDRO = Double.parseDouble(tOD_CILINDRO.getText());
                     double OI_CILINDRO = Double.parseDouble(tOI_CILINDRO.getText());
                     double OD_ADICION = Double.parseDouble(tOD_ADICION.getText());
                     double OI_ADICION = Double.parseDouble(tOI_ADICION.getText());
@@ -66,10 +64,10 @@ public class UsuarioTab extends JFrame{
                     double OI_AGUDEZA = Double.parseDouble(tOI_AGUDEZA.getText());
                     String NIF = seleccionado.getNIF();
                     Date date = new java.sql.Date(dateChooser.getDate().getTime());
-                    Receta nuevaReceta = new Receta(NIF,date,OD_ESFERA,OD_CILINDRO,OD_ADICION,OD_AGUDEZA,OI_ESFERA,OI_CILINDRO,OI_ADICION,OI_AGUDEZA);
-                    model.addRow(new Object [] {nuevaReceta.getID(), NIF, date.toString(), tOD_ESFERA.getText(), tOD_CILINDROTextField.getText(),
-                            tOD_ADICION.getText(),tOD_AGUDEZA.getText(),tOI_ESFERA.getText(),
-                            tOI_CILINDRO.getText(), tOI_ADICION.getText(), tOI_AGUDEZA.getText() } );
+                    Receta nuevaReceta = new Receta(NIF,date,OD_ESFERA, OD_CILINDRO,OD_ADICION,OD_AGUDEZA,OI_ESFERA,OI_CILINDRO,OI_ADICION,OI_AGUDEZA);
+                    model.addRow(new Object [] {nuevaReceta.getID(), nuevaReceta.getNIF(), nuevaReceta.getCONSULTA(),
+                            nuevaReceta.getOD_ESFERA(), nuevaReceta.getOD_CILINDRO(), nuevaReceta.getOD_ADICION(), nuevaReceta.getOD_AGUDEZA(),
+                            nuevaReceta.getOI_ESFERA(), nuevaReceta.getOI_CILINDRO(), nuevaReceta.getOI_ADICION(), nuevaReceta.getOI_AGUDEZA() } );
 
                     recetaSeleccionada=null;
                     mostrarRecetaSeleccionada();
@@ -97,8 +95,8 @@ public class UsuarioTab extends JFrame{
                         recetaSeleccionada.setOD_ESFERA(Double.parseDouble(tOD_ESFERA.getText()));
                     if (Double.parseDouble(tOI_ESFERA.getText()) != recetaSeleccionada.getOI_ESFERA())
                         recetaSeleccionada.setOI_ESFERA(Double.parseDouble(tOI_ESFERA.getText()));
-                    if (Double.parseDouble(tOD_CILINDROTextField.getText()) != recetaSeleccionada.getOD_CILINDRO())
-                        recetaSeleccionada.setOI_ESFERA(Double.parseDouble(tOD_CILINDROTextField.getText()));
+                    if (Double.parseDouble(tOD_CILINDRO.getText()) != recetaSeleccionada.getOD_CILINDRO())
+                        recetaSeleccionada.setOI_ESFERA(Double.parseDouble(tOD_CILINDRO.getText()));
                     if (Double.parseDouble(tOI_CILINDRO.getText()) != recetaSeleccionada.getOI_CILINDRO())
                         recetaSeleccionada.setOI_ESFERA(Double.parseDouble(tOI_CILINDRO.getText()));
                     if (Double.parseDouble(tOD_ADICION.getText()) != recetaSeleccionada.getOD_ADICION())
@@ -177,7 +175,7 @@ public class UsuarioTab extends JFrame{
             tOI_ADICION.setText("");
             tOD_AGUDEZA.setText("");
             tOI_AGUDEZA.setText("");
-            tOD_CILINDROTextField.setText("");
+            tOD_CILINDRO.setText("");
             tOI_CILINDRO.setText("");
         }else {
 
@@ -187,7 +185,7 @@ public class UsuarioTab extends JFrame{
             tOI_ADICION.setText(String.valueOf(recetaSeleccionada.getOI_ADICION()));
             tOD_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOD_AGUDEZA()));
             tOI_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOI_AGUDEZA()));
-            tOD_CILINDROTextField.setText(String.valueOf(recetaSeleccionada.getOD_CILINDRO()));
+            tOD_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOD_CILINDRO()));
             tOI_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOI_CILINDRO()));
         }
     }

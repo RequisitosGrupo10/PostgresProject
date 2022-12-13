@@ -1,6 +1,7 @@
 package org.example;
 
 import io.ebean.DB;
+import io.ebean.annotation.Identity;
 import org.example.query.QCliente;
 import org.example.query.QReceta;
 import org.example.query.assoc.QAssocReceta;
@@ -11,10 +12,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static io.ebean.annotation.IdentityGenerated.BY_DEFAULT;
 @Entity
+@Table(name="Receta")
 public class Receta {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Identity(generated = BY_DEFAULT, start = 10000, cache = 1000)
     private int ID;
     private String NIF;
     private Date CONSULTA;
@@ -52,7 +55,7 @@ public class Receta {
 
     public static List<Receta> listaRecetasCliente(Cliente c){
         return new QReceta()
-                .setDistinct(true).having().NIF.iequalTo(c.getNIF())
+                .NIF.iequalTo(c.getNIF())
                 .findList();
     }
 
