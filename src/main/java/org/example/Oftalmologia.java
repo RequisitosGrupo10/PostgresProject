@@ -89,7 +89,8 @@ public class Oftalmologia extends JFrame{
                         DB.update(seleccionado);
                         model.removeRow(index);
                         //Actualizamos valor en tabla
-                        model.insertRow(index, new Object[]{seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
+                        model.addRow(new Object[] {seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
+//                        model.insertRow(index, new Object[]{seleccionado.getNIF(), seleccionado.getNOMBRE(), seleccionado.getAPELLIDOS(), seleccionado.getEDAD()});
                         seleccionado = null;
                         mostrarSeleccionado();
                     } catch (Exception ex) {

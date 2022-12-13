@@ -14,6 +14,7 @@ import java.util.Objects;
 @Entity
 public class Receta {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int ID;
     private String NIF;
     private Date CONSULTA;

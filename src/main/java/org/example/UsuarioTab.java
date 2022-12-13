@@ -67,9 +67,13 @@ public class UsuarioTab extends JFrame{
                     String NIF = seleccionado.getNIF();
                     Date date = new java.sql.Date(dateChooser.getDate().getTime());
                     Receta nuevaReceta = new Receta(NIF,date,OD_ESFERA,OD_CILINDRO,OD_ADICION,OD_AGUDEZA,OI_ESFERA,OI_CILINDRO,OI_ADICION,OI_AGUDEZA);
+                    model.addRow(new Object [] {nuevaReceta.getID(), NIF, date.toString(), tOD_ESFERA.getText(), tOD_CILINDROTextField.getText(),
+                            tOD_ADICION.getText(),tOD_AGUDEZA.getText(),tOI_ESFERA.getText(),
+                            tOI_CILINDRO.getText(), tOI_ADICION.getText(), tOI_AGUDEZA.getText() } );
 
                     recetaSeleccionada=null;
                     mostrarRecetaSeleccionada();
+
 
                 } catch (Exception ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
