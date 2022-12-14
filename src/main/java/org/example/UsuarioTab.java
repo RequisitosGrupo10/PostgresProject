@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Date;
 
-public class UsuarioTab extends JFrame{
+public class UsuarioTab extends JFrame {
     JTable table1;
     private JTextField tOD_ESFERA;
     private JTextField tOI_ESFERA;
@@ -35,23 +35,21 @@ public class UsuarioTab extends JFrame{
 
     private Cliente cliente;
 
-    private Receta recetaSeleccionada;
+    private Receta receta;
 
-    public UsuarioTab(Cliente seleccionado)
-    {
+    public UsuarioTab(Cliente cliente) {
         super("Registro");
-        cliente = seleccionado;
+        this.cliente = cliente;
         setContentPane(mainPanel);
         table1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                int [] data= table1.getSelectedRows();
-                if (data.length == 0)
-                {
-                    recetaSeleccionada = null;
-                }else {
+                int[] data = table1.getSelectedRows();
+                if (data.length == 0) {
+                    receta = null;
+                } else {
                     int recetaID = (int) table1.getValueAt(data[0], 0);
-                    recetaSeleccionada = new Receta(recetaID);
+                    receta = Receta.getReceta(recetaID);
                 }
                 mostrarRecetaSeleccionada();
             }
@@ -77,64 +75,61 @@ public class UsuarioTab extends JFrame{
                     double OI_ADICION = Double.parseDouble(tOI_ADICION.getText());
                     double OD_AGUDEZA = Double.parseDouble(tOD_AGUDEZA.getText());
                     double OI_AGUDEZA = Double.parseDouble(tOI_AGUDEZA.getText());
-                    String NIF = seleccionado.getNIF();
+                    String NIF = cliente.getNIF();
                     Date date = new java.sql.Date(dateChooser.getDate().getTime());
-                    Receta nuevaReceta = new Receta(NIF,date,OD_ESFERA, OD_CILINDRO,OD_ADICION,OD_AGUDEZA,OI_ESFERA,OI_CILINDRO,OI_ADICION,OI_AGUDEZA);
-                    model.addRow(new Object [] {nuevaReceta.getID(), nuevaReceta.getNIF(), nuevaReceta.getCONSULTA(),
+                    Receta nuevaReceta = new Receta(NIF, date, OD_ESFERA, OD_CILINDRO, OD_ADICION, OD_AGUDEZA, OI_ESFERA, OI_CILINDRO, OI_ADICION, OI_AGUDEZA);
+                    model.addRow(new Object[]{nuevaReceta.getID(), nuevaReceta.getNIF(), nuevaReceta.getCONSULTA(),
                             nuevaReceta.getOD_ESFERA(), nuevaReceta.getOD_CILINDRO(), nuevaReceta.getOD_ADICION(), nuevaReceta.getOD_AGUDEZA(),
-                            nuevaReceta.getOI_ESFERA(), nuevaReceta.getOI_CILINDRO(), nuevaReceta.getOI_ADICION(), nuevaReceta.getOI_AGUDEZA() } );
+                            nuevaReceta.getOI_ESFERA(), nuevaReceta.getOI_CILINDRO(), nuevaReceta.getOI_ADICION(), nuevaReceta.getOI_AGUDEZA()});
 
-                    recetaSeleccionada=null;
+                    receta = null;
                     table1.clearSelection();
                     mostrarRecetaSeleccionada();
 
 
-                } catch (Exception ex){
+                } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-
         actualizarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Actualizando cita");
-                if (recetaSeleccionada == null)
-                {
+                if (receta == null) {
                     JOptionPane.showMessageDialog(null, "No se puede actualizar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 try {
-                    if (Double.parseDouble(tOD_ESFERA.getText()) != recetaSeleccionada.getOD_ESFERA())
-                        recetaSeleccionada.setOD_ESFERA(Double.parseDouble(tOD_ESFERA.getText()));
-                    if (Double.parseDouble(tOI_ESFERA.getText()) != recetaSeleccionada.getOI_ESFERA())
-                        recetaSeleccionada.setOI_ESFERA(Double.parseDouble(tOI_ESFERA.getText()));
-                    if (Double.parseDouble(tOD_CILINDRO.getText()) != recetaSeleccionada.getOD_CILINDRO())
-                        recetaSeleccionada.setOD_CILINDRO(Double.parseDouble(tOD_CILINDRO.getText()));
-                    if (Double.parseDouble(tOI_CILINDRO.getText()) != recetaSeleccionada.getOI_CILINDRO())
-                        recetaSeleccionada.setOI_CILINDRO(Double.parseDouble(tOI_CILINDRO.getText()));
-                    if (Double.parseDouble(tOD_ADICION.getText()) != recetaSeleccionada.getOD_ADICION())
-                        recetaSeleccionada.setOD_ADICION(Double.parseDouble(tOD_ADICION.getText()));
-                    if (Double.parseDouble(tOI_ADICION.getText()) != recetaSeleccionada.getOI_ADICION())
-                        recetaSeleccionada.setOI_ADICION(Double.parseDouble(tOI_ADICION.getText()));
-                    if (Double.parseDouble(tOD_AGUDEZA.getText()) != recetaSeleccionada.getOD_AGUDEZA())
-                        recetaSeleccionada.setOD_AGUDEZA(Double.parseDouble(tOD_AGUDEZA.getText()));
-                    if (Double.parseDouble(tOI_AGUDEZA.getText()) != recetaSeleccionada.getOI_AGUDEZA())
-                        recetaSeleccionada.setOI_AGUDEZA(Double.parseDouble(tOI_AGUDEZA.getText()));
-                    if(dateChooser.getDate().compareTo(recetaSeleccionada.getCONSULTA()) != 0)
-                        recetaSeleccionada.setCONSULTA(new Date(dateChooser.getDate().getTime()) );
+                    if (Double.parseDouble(tOD_ESFERA.getText()) != receta.getOD_ESFERA())
+                        receta.setOD_ESFERA(Double.parseDouble(tOD_ESFERA.getText()));
+                    if (Double.parseDouble(tOI_ESFERA.getText()) != receta.getOI_ESFERA())
+                        receta.setOI_ESFERA(Double.parseDouble(tOI_ESFERA.getText()));
+                    if (Double.parseDouble(tOD_CILINDRO.getText()) != receta.getOD_CILINDRO())
+                        receta.setOD_CILINDRO(Double.parseDouble(tOD_CILINDRO.getText()));
+                    if (Double.parseDouble(tOI_CILINDRO.getText()) != receta.getOI_CILINDRO())
+                        receta.setOI_CILINDRO(Double.parseDouble(tOI_CILINDRO.getText()));
+                    if (Double.parseDouble(tOD_ADICION.getText()) != receta.getOD_ADICION())
+                        receta.setOD_ADICION(Double.parseDouble(tOD_ADICION.getText()));
+                    if (Double.parseDouble(tOI_ADICION.getText()) != receta.getOI_ADICION())
+                        receta.setOI_ADICION(Double.parseDouble(tOI_ADICION.getText()));
+                    if (Double.parseDouble(tOD_AGUDEZA.getText()) != receta.getOD_AGUDEZA())
+                        receta.setOD_AGUDEZA(Double.parseDouble(tOD_AGUDEZA.getText()));
+                    if (Double.parseDouble(tOI_AGUDEZA.getText()) != receta.getOI_AGUDEZA())
+                        receta.setOI_AGUDEZA(Double.parseDouble(tOI_AGUDEZA.getText()));
+                    if (dateChooser.getDate().compareTo(receta.getCONSULTA()) != 0)
+                        receta.setCONSULTA(new Date(dateChooser.getDate().getTime()));
 
-                    DB.update(recetaSeleccionada);
+                    DB.update(receta);
 
-                    recetaSeleccionada=null;
+                    receta = null;
                     table1.clearSelection();
                     mostrarRecetaSeleccionada();
                     loadData();
 
-                }catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -144,14 +139,15 @@ public class UsuarioTab extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Borrando cita");
-                if (recetaSeleccionada == null) {
+                if (receta == null) {
                     JOptionPane.showMessageDialog(null, "No se puede borrar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                recetaSeleccionada.borrar();
-                recetaSeleccionada=null;
+
+                model.removeRow(findInTable(receta.getID()));
+                receta.borrar();
+                receta = null;
                 mostrarRecetaSeleccionada();
-                loadData();
             }
         });
 
@@ -159,26 +155,17 @@ public class UsuarioTab extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Limpiando campos");
-                recetaSeleccionada=null;
+                receta = null;
                 table1.clearSelection();
                 mostrarRecetaSeleccionada();
             }
         });
-/*
-        table1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+        setFocusListeners();
 
-            }
-        });
-
- */
     }
 
     private void mostrarRecetaSeleccionada() {
-        if (recetaSeleccionada == null)
-        {
+        if (receta == null) {
             tOD_ESFERA.setText("");
             tOD_ADICION.setText("");
             tOI_ESFERA.setText("");
@@ -187,17 +174,16 @@ public class UsuarioTab extends JFrame{
             tOI_AGUDEZA.setText("");
             tOD_CILINDRO.setText("");
             tOI_CILINDRO.setText("");
-        }else {
-
-            tOD_ESFERA.setText(String.valueOf(recetaSeleccionada.getOD_ESFERA()));
-            tOD_ADICION.setText(String.valueOf(recetaSeleccionada.getOD_ADICION()));
-            tOI_ESFERA.setText(String.valueOf(recetaSeleccionada.getOI_ESFERA()));
-            tOI_ADICION.setText(String.valueOf(recetaSeleccionada.getOI_ADICION()));
-            tOD_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOD_AGUDEZA()));
-            tOI_AGUDEZA.setText(String.valueOf(recetaSeleccionada.getOI_AGUDEZA()));
-            tOD_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOD_CILINDRO()));
-            tOI_CILINDRO.setText(String.valueOf(recetaSeleccionada.getOI_CILINDRO()));
-            dateChooser.setDate(recetaSeleccionada.getCONSULTA());
+        } else {
+            tOD_ESFERA.setText(String.valueOf(receta.getOD_ESFERA()));
+            tOD_ADICION.setText(String.valueOf(receta.getOD_ADICION()));
+            tOI_ESFERA.setText(String.valueOf(receta.getOI_ESFERA()));
+            tOI_ADICION.setText(String.valueOf(receta.getOI_ADICION()));
+            tOD_AGUDEZA.setText(String.valueOf(receta.getOD_AGUDEZA()));
+            tOI_AGUDEZA.setText(String.valueOf(receta.getOI_AGUDEZA()));
+            tOD_CILINDRO.setText(String.valueOf(receta.getOD_CILINDRO()));
+            tOI_CILINDRO.setText(String.valueOf(receta.getOI_CILINDRO()));
+            dateChooser.setDate(receta.getCONSULTA());
         }
     }
 
@@ -207,8 +193,8 @@ public class UsuarioTab extends JFrame{
         dateChooser.setDate(new java.util.Date());
         dateChooser.setDateFormatString("dd/MM/yyyy");
 
-        model=new DefaultTableModel();
-        model.setColumnIdentifiers(new String[]  {"ID", "NIF", "CONSULTA", "OD_ESFERA", "OD_CILINDRO","OD_ADICION","OD_AGUDEZA", "OI_ESFERA", "OI_CILINDRO","OI_ADICION","OI_AGUDEZA"});
+        model = new DefaultTableModel();
+        model.setColumnIdentifiers(new String[]{"ID", "NIF", "CONSULTA", "OD_ESFERA", "OD_CILINDRO", "OD_ADICION", "OD_AGUDEZA", "OI_ESFERA", "OI_CILINDRO", "OI_ADICION", "OI_AGUDEZA"});
         loadTable();
 
         Font font1 = new Font("SansSerif", Font.BOLD, 20);
@@ -222,22 +208,92 @@ public class UsuarioTab extends JFrame{
         table1.setModel(model);
         table1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         loadData();
-        }
+    }
 
     private void loadData() {
         int i = model.getRowCount();
-        while (i > 0){
-            model.removeRow(i-1);
+        while (i > 0) {
+            model.removeRow(i - 1);
             i--;
         }
         for (Receta receta : Receta.listaRecetasCliente(cliente)) {
             System.out.println(receta.toString());
-            model.insertRow(i,new Object[]{receta.getID(),receta.getNIF(),receta.getCONSULTA(),receta.getOD_ESFERA(), receta.getOD_CILINDRO(),receta.getOD_ADICION(),receta.getOD_AGUDEZA(),receta.getOI_ESFERA(),receta.getOI_CILINDRO(),receta.getOI_ADICION(),receta.getOI_AGUDEZA()});
+            model.insertRow(i, new Object[]{receta.getID(), receta.getNIF(), receta.getCONSULTA(), receta.getOD_ESFERA(), receta.getOD_CILINDRO(), receta.getOD_ADICION(), receta.getOD_AGUDEZA(), receta.getOI_ESFERA(), receta.getOI_CILINDRO(), receta.getOI_ADICION(), receta.getOI_AGUDEZA()});
             i++;
+        }
     }
 
-}
     private void showParent() {
         Oftalmologia.getInstance().toggleVisibility();
+    }
+
+    private int findInTable(int id) {
+        for (int i = 0; i < model.getDataVector().size(); i++) {
+            if (id == (int) model.getDataVector().get(i).get(0)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void setFocusListeners() {
+        tOD_ESFERA.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOD_ESFERA.selectAll();
+            }
+        });
+        tOI_ESFERA.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOI_ESFERA.selectAll();
+            }
+        });
+        tOD_ADICION.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOD_ADICION.selectAll();
+            }
+        });
+        tOI_ADICION.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOI_ADICION.selectAll();
+            }
+        });
+
+        tOD_AGUDEZA.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOD_AGUDEZA.selectAll();
+            }
+        });
+        tOI_AGUDEZA.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOI_AGUDEZA.selectAll();
+            }
+        });
+
+        tOD_CILINDRO.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOD_CILINDRO.selectAll();
+            }
+        });
+        tOI_CILINDRO.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                super.focusGained(e);
+                tOI_CILINDRO.selectAll();
+            }
+        });
     }
 }

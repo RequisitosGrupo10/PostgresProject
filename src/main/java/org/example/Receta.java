@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static io.ebean.annotation.IdentityGenerated.BY_DEFAULT;
+
 @Entity
-@Table(name="Receta")
+@Table(name = "Receta")
 public class Receta {
     @Id
     @Identity(generated = BY_DEFAULT, start = 10000, cache = 1000)
@@ -30,21 +31,8 @@ public class Receta {
     private double OI_ADICION;
     private double OI_AGUDEZA;
 
-    public Receta(int recetaID) {
-        Receta receta = new QReceta().ID.eq(recetaID).findOne();
-        if (receta==null)
-            throw new RuntimeException("Cita no encontrada");
-        this.ID = recetaID;
-        this.NIF = receta.NIF;
-        this.CONSULTA = receta.CONSULTA;
-        this.OD_ESFERA = receta.OD_ESFERA;
-        this.OD_CILINDRO = receta.OD_CILINDRO;
-        this.OD_ADICION = receta.OD_ADICION;
-        this.OD_AGUDEZA = receta.OD_AGUDEZA;
-        this.OI_ESFERA = receta.OI_ESFERA;
-        this.OI_CILINDRO = receta.OI_CILINDRO;
-        this.OI_ADICION = receta.OI_ADICION;
-        this.OI_AGUDEZA = receta.OI_AGUDEZA;
+    public static Receta getReceta(int recetaID) {
+        return new QReceta().ID.eq(recetaID).findOne();
     }
 
     public static List<Receta> listaRecetas() {
@@ -53,7 +41,7 @@ public class Receta {
         return res;
     }
 
-    public static List<Receta> listaRecetasCliente(Cliente c){
+    public static List<Receta> listaRecetasCliente(Cliente c) {
         return new QReceta()
                 .NIF.iequalTo(c.getNIF())
                 .findList();
@@ -166,12 +154,12 @@ public class Receta {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Receta receta = (Receta) o;
-        return NIF.equals(receta.NIF) && CONSULTA.equals(receta.CONSULTA);
+        return ID == receta.getID();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(NIF, CONSULTA);
+        return Objects.hash(ID);
     }
 
     @Override

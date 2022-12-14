@@ -1,4 +1,5 @@
 package org.example;
+
 import io.ebean.DB;
 import org.example.query.QCliente;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-  public class Cliente {
+public class Cliente {
     @Id
     private String NIF;
     private String NOMBRE;
@@ -16,90 +17,85 @@ import java.util.Objects;
     private int EDAD;
 
     public Cliente(String NIF, String NOMBRE, String APELLIDOS, int EDAD) {
-      this.NIF = NIF;
-      this.NOMBRE = NOMBRE;
-      this.APELLIDOS = APELLIDOS;
-      this.EDAD = EDAD;
-      DB.save(this);
+        this.NIF = NIF;
+        this.NOMBRE = NOMBRE;
+        this.APELLIDOS = APELLIDOS;
+        this.EDAD = EDAD;
+        DB.save(this);
+    }
+
+    public static Cliente getCliente(String nif) {
+        return new QCliente().NIF.iequalTo(nif).findOne();
+    }
+
+    public static List<Cliente> listaClientes() {
+        List<Cliente> res = new QCliente().findList();
+        return res;
+    }
+
+    public static List<Integer> listaEdades() {
+        var cliente = QCliente.alias();
+
+        List<Integer> res = new QCliente()
+                .setDistinct(true)
+                .select(cliente.EDAD)
+                .findSingleAttributeList();
+        return res;
     }
 
 
-  public Cliente(String nif) {
-      Cliente cliente = new QCliente().NIF.iequalTo(nif).findOne();
-      this.NIF = nif;
-      this.NOMBRE = cliente.getNOMBRE();
-      this.APELLIDOS = cliente.getAPELLIDOS();
-      this.EDAD = cliente.getEDAD();
-  }
-
-  public static List<Cliente> listaClientes() {
-      List<Cliente> res = new QCliente().findList();
-      return res;
-  }
-
-  public static List<Integer> listaEdades() {
-      var cliente = QCliente.alias();
-
-      List<Integer> res = new QCliente()
-              .setDistinct(true)
-              .select(cliente.EDAD)
-              .findSingleAttributeList();
-      return res;
-  }
-
-
-  public void setNOMBRE(String NOMBRE) {
-      this.NOMBRE = NOMBRE;
+    public void setNOMBRE(String NOMBRE) {
+        this.NOMBRE = NOMBRE;
     }
 
     public void setAPELLIDOS(String APELLIDOS) {
-      this.APELLIDOS = APELLIDOS;
+        this.APELLIDOS = APELLIDOS;
     }
 
     public void setEDAD(int EDAD) {
-      this.EDAD = EDAD;
+        this.EDAD = EDAD;
     }
 
 
     public String getNIF() {
-      return NIF;
+        return NIF;
     }
 
     public String getNOMBRE() {
-      return NOMBRE;
+        return NOMBRE;
     }
 
     public String getAPELLIDOS() {
-      return APELLIDOS;
+        return APELLIDOS;
     }
 
     public int getEDAD() {
-      return EDAD;
+        return EDAD;
     }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Cliente cliente = (Cliente) o;
-    return NIF.equals(cliente.NIF);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cliente cliente = (Cliente) o;
+        return NIF.equals(cliente.NIF);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(NIF);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(NIF);
+    }
 
-  @Override
+    @Override
     public String toString() {
-      return (NIF + ";" + NOMBRE + ";" + APELLIDOS + ";" + EDAD);
+        return (NIF + ";" + NOMBRE + ";" + APELLIDOS + ";" + EDAD);
     }
 
-  public void borrar() {
-      DB.delete(this);
-      this.NOMBRE = null;
-      this.NIF = null;
-      this.APELLIDOS = null;
-      this.EDAD = -1;
-  }
+    public void borrar() {
+        DB.delete(this);
+        this.NOMBRE = null;
+        this.NIF = null;
+        this.APELLIDOS = null;
+        this.EDAD = -1;
+    }
 }
