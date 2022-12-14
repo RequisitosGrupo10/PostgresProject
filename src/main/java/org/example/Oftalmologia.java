@@ -99,7 +99,7 @@ public class Oftalmologia extends JFrame {
                     return;
                 seleccionado.borrar();
                 //Actualizamos la tabla
-                model.removeRow(findInTable(seleccionado));
+                loadData();
                 seleccionado = null;
                 mostrarSeleccionado();
             }
