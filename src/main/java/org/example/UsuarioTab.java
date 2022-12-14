@@ -66,6 +66,23 @@ public class UsuarioTab extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    if (tOD_ESFERA.getText().length() == 0)
+                        throw new RuntimeException("OD_ESFERA está vacía");
+                    if (tOI_ESFERA.getText().length() == 0)
+                        throw new RuntimeException("OI_ESFERA está vacía");
+                    if (tOD_CILINDRO.getText().length() == 0)
+                        throw new RuntimeException("OD_CILINDRO está vacía");
+                    if (tOI_CILINDRO.getText().length() == 0)
+                        throw new RuntimeException("OI_CILINDRO está vacía");
+                    if (tOD_ADICION.getText().length() == 0)
+                        throw new RuntimeException("OD_ADICION está vacía");
+                    if (tOI_ADICION.getText().length() == 0)
+                        throw new RuntimeException("OD_IDICION está vacía");
+                    if (tOD_AGUDEZA.getText().length() == 0)
+                        throw new RuntimeException("OD_AGUDEZA está vacía");
+                    if (tOI_AGUDEZA.getText().length() == 0)
+                        throw new RuntimeException("OI_AGUDEZA está vacía");
+
                     double OD_ESFERA = Double.parseDouble(tOD_ESFERA.getText());
                     double OI_ESFERA = Double.parseDouble(tOI_ESFERA.getText());
                     double OD_CILINDRO = Double.parseDouble(tOD_CILINDRO.getText());
@@ -74,9 +91,13 @@ public class UsuarioTab extends JFrame {
                     double OI_ADICION = Double.parseDouble(tOI_ADICION.getText());
                     double OD_AGUDEZA = Double.parseDouble(tOD_AGUDEZA.getText());
                     double OI_AGUDEZA = Double.parseDouble(tOI_AGUDEZA.getText());
+
+                    // Añadir a la base de datos
                     String NIF = cliente.getNIF();
                     Date date = new java.sql.Date(dateChooser.getDate().getTime());
                     Receta nuevaReceta = new Receta(NIF, date, OD_ESFERA, OD_CILINDRO, OD_ADICION, OD_AGUDEZA, OI_ESFERA, OI_CILINDRO, OI_ADICION, OI_AGUDEZA);
+
+                    // Actualizar la tabla
                     model.addRow(new Object[]{nuevaReceta.getID(), nuevaReceta.getNIF(), nuevaReceta.getCONSULTA(),
                             nuevaReceta.getOD_ESFERA(), nuevaReceta.getOD_CILINDRO(), nuevaReceta.getOD_ADICION(), nuevaReceta.getOD_AGUDEZA(),
                             nuevaReceta.getOI_ESFERA(), nuevaReceta.getOI_CILINDRO(), nuevaReceta.getOI_ADICION(), nuevaReceta.getOI_AGUDEZA()});
@@ -85,7 +106,8 @@ public class UsuarioTab extends JFrame {
                     table1.clearSelection();
                     mostrarRecetaSeleccionada();
 
-
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "No número en una celda", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }

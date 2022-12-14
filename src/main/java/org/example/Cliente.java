@@ -17,6 +17,7 @@ public class Cliente {
     private int EDAD;
 
     public Cliente(String NIF, String NOMBRE, String APELLIDOS, int EDAD) {
+
         this.NIF = NIF;
         this.NOMBRE = NOMBRE;
         this.APELLIDOS = APELLIDOS;
