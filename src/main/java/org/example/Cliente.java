@@ -33,17 +33,6 @@ public class Cliente {
         return res;
     }
 
-    public static List<Integer> listaEdades() {
-        var cliente = QCliente.alias();
-
-        List<Integer> res = new QCliente()
-                .setDistinct(true)
-                .select(cliente.EDAD)
-                .findSingleAttributeList();
-        return res;
-    }
-
-
     public void setNOMBRE(String NOMBRE) {
         this.NOMBRE = NOMBRE;
     }

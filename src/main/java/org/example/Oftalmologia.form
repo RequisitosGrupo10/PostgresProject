@@ -120,14 +120,6 @@
           <text value="Revisiones"/>
         </properties>
       </component>
-      <component id="8cbb9" class="javax.swing.JList" binding="lEdad" custom-create="true">
-        <constraints>
-          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <scrollpane id="fb094">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -141,6 +133,21 @@
               <autoCreateRowSorter value="true"/>
               <enabled value="true"/>
             </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <scrollpane id="58a2f">
+        <constraints>
+          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="70"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="8cbb9" class="javax.swing.JList" binding="lEdad" custom-create="true">
+            <constraints/>
+            <properties/>
           </component>
         </children>
       </scrollpane>

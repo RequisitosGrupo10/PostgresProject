@@ -7,6 +7,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Oftalmologia extends JFrame {
@@ -43,7 +45,6 @@ public class Oftalmologia extends JFrame {
         añadirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Añadiendo nuevo estudiante");
                 try {
                     String nif = tNIF.getText();
                     String nombre = tNombre.getText();
@@ -175,7 +176,11 @@ public class Oftalmologia extends JFrame {
     }
 
     private void loadEdades() {
-        lEdad = new JList<>(Cliente.listaEdades().toArray());
+        Integer[] e = new Integer[100];
+        for (int i = 0; i < e.length; i++) {
+            e[i] = i;
+        }
+        lEdad = new JList<>(e);
     }
 
     private void loadTable() {
@@ -192,7 +197,6 @@ public class Oftalmologia extends JFrame {
             i--;
         }
         for (Cliente cliente : Cliente.listaClientes()) {
-//            System.out.println(cliente.getNIF() + cliente.getNOMBRE() + cliente.getAPELLIDOS() + cliente.getEDAD());
             model.insertRow(i, new Object[]{cliente.getNIF(), cliente.getNOMBRE(), cliente.getAPELLIDOS(), cliente.getEDAD()});
         }
     }

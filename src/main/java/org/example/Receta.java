@@ -37,7 +37,6 @@ public class Receta {
 
     public static List<Receta> listaRecetas() {
         List<Receta> res = new QReceta().findList();
-        System.out.println(res.get(0).toString());
         return res;
     }
 

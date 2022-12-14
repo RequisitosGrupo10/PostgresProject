@@ -65,7 +65,6 @@ public class UsuarioTab extends JFrame {
         añadirButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Añadiendo cita");
                 try {
                     double OD_ESFERA = Double.parseDouble(tOD_ESFERA.getText());
                     double OI_ESFERA = Double.parseDouble(tOI_ESFERA.getText());
@@ -96,7 +95,6 @@ public class UsuarioTab extends JFrame {
         actualizarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Actualizando cita");
                 if (receta == null) {
                     JOptionPane.showMessageDialog(null, "No se puede actualizar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -138,23 +136,21 @@ public class UsuarioTab extends JFrame {
         borrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Borrando cita");
                 if (receta == null) {
                     JOptionPane.showMessageDialog(null, "No se puede borrar un objeto sin seleccionar", "ERROR", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                model.removeRow(findInTable(receta.getID()));
                 receta.borrar();
                 receta = null;
                 mostrarRecetaSeleccionada();
+                loadData();
             }
         });
 
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Limpiando campos");
                 receta = null;
                 table1.clearSelection();
                 mostrarRecetaSeleccionada();
@@ -217,7 +213,6 @@ public class UsuarioTab extends JFrame {
             i--;
         }
         for (Receta receta : Receta.listaRecetasCliente(cliente)) {
-            System.out.println(receta.toString());
             model.insertRow(i, new Object[]{receta.getID(), receta.getNIF(), receta.getCONSULTA(), receta.getOD_ESFERA(), receta.getOD_CILINDRO(), receta.getOD_ADICION(), receta.getOD_AGUDEZA(), receta.getOI_ESFERA(), receta.getOI_CILINDRO(), receta.getOI_ADICION(), receta.getOI_AGUDEZA()});
             i++;
         }
@@ -225,15 +220,6 @@ public class UsuarioTab extends JFrame {
 
     private void showParent() {
         Oftalmologia.getInstance().toggleVisibility();
-    }
-
-    private int findInTable(int id) {
-        for (int i = 0; i < model.getDataVector().size(); i++) {
-            if (id == (int) model.getDataVector().get(i).get(0)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private void setFocusListeners() {
