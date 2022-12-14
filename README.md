@@ -1,17 +1,38 @@
-Ebean + Java + PostgresSQL
-=====================
 
-En esta práctica se resolverá el problema de una clínica de oftalmología con tecnologías de bases de datos como Ebean ORM.
+<center>
+<h1> Ebean + Java + PostgresSQL<h1>
+<h2>En esta práctica se resolverá el problema de una clínica de oftalmología con tecnologías de bases de datos Ebean ORM</h2>
+</center>
+<br>
 
-Lo primero necesario será descargar la imagen de docker de Postgres y correrla:
-
+### Lo primero necesario será descargar la imagen de docker de Postgres y crear un contenedor:
 ```
 docker pull postgres
 ```
 ```
 docker run --name postgres -e POSTGRES_PASSWORD=1111 -p 5432:5432 -d postgres
 ```
-A continuación, podremos iniciar desde el terminal el servicio de postgres con
+### Opción a
+A continuación, para creación semiautomatica de la base de datos
+Abrimos la carpeta principal del proyecto el en terminal y ejecutamos sigiente línea para copiar el código en el contenedor postgres.
+```
+docker cp \script.sql postgres:.
+```
+Seguido por:
+```
+docker exec -it postgres psql -U postgres  
+```
+y 
+```
+\i ./script.sql 
+```
+
+Si todo ido bien el contenedor estará creado y corriendo. 
+<br>
+<br>
+
+### Opción b
+Si usted opta por la opción manual podremos iniciar desde el terminal el servicio de postgres con
 ```
 psql -U postgres -W
 ```
