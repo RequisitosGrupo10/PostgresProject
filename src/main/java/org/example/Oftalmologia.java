@@ -46,13 +46,25 @@ public class Oftalmologia extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String nif = tNIF.getText();
-                    String nombre = tNombre.getText();
-                    String apellido = tApellidos.getText();
-                    Integer edad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
+                    String nif, nombre, apellido;
+                    Integer edad;
+                    System.out.println(tNIF.getText().length());
+                    if (tNIF.getText().length() == 0)
+                        throw new RuntimeException("No hay NIF");
+                    if (tNombre.getText().length() == 0)
+                        throw new RuntimeException("No hay nombre");
+                    if (tApellidos.getText().length() == 0)
+                        throw new RuntimeException("No hay apellido");
+                    if (lEdad.getSelectedIndex() == -1)
+                        throw new RuntimeException("No hay edad seleccionada");
+                    nif = tNIF.getText();
+                    nombre = tNombre.getText();
+                    apellido = tApellidos.getText();
+                    edad = Integer.parseInt(lEdad.getModel().getElementAt(lEdad.getSelectedIndex()).toString());
 
-                    seleccionado = new Cliente(nif, nombre, apellido, edad);
+                    new Cliente(nif, nombre, apellido, edad); // Añadir nuevo cliente
                     seleccionado = null;
+
                     //Actualizamos tabla
                     model.addRow(new Object[]{nif, nombre, apellido, edad});
                     mostrarSeleccionado();
@@ -71,9 +83,8 @@ public class Oftalmologia extends JFrame {
                 } else {
                     try {
                         int index = findInTable(seleccionado);
-                        if (!tNombre.getText().equals(seleccionado.getNOMBRE())) {
+                        if (!tNombre.getText().equals(seleccionado.getNOMBRE()))
                             seleccionado.setNOMBRE(tNombre.getText());
-                        }
 
                         if (!tApellidos.getText().equals(seleccionado.getAPELLIDOS()))
                             seleccionado.setAPELLIDOS(tApellidos.getText());
