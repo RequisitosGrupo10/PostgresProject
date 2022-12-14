@@ -48,7 +48,7 @@ public class Oftalmologia extends JFrame {
                 try {
                     String nif, nombre, apellido;
                     Integer edad;
-                    System.out.println(tNIF.getText().length());
+
                     if (tNIF.getText().length() == 0)
                         throw new RuntimeException("No hay NIF");
                     if (tNombre.getText().length() == 0)

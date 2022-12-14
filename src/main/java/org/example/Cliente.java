@@ -16,7 +16,16 @@ public class Cliente {
     private String APELLIDOS;
     private int EDAD;
 
+    private void checkSQLInjection(String string)
+    {
+        if (string.contains(";") || string.indexOf("DROP") != -1)
+            throw new RuntimeException("Posible inyección de datos");
+    }
+
     public Cliente(String NIF, String NOMBRE, String APELLIDOS, int EDAD) {
+        checkSQLInjection(NIF);
+        checkSQLInjection(NOMBRE);
+        checkSQLInjection(APELLIDOS);
 
         this.NIF = NIF;
         this.NOMBRE = NOMBRE;
@@ -35,10 +44,12 @@ public class Cliente {
     }
 
     public void setNOMBRE(String NOMBRE) {
+        checkSQLInjection(NOMBRE);
         this.NOMBRE = NOMBRE;
     }
 
     public void setAPELLIDOS(String APELLIDOS) {
+        checkSQLInjection(APELLIDOS);
         this.APELLIDOS = APELLIDOS;
     }
 
