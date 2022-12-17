@@ -18,7 +18,7 @@ public class Cliente {
 
     private void checkSQLInjection(String string)
     {
-        if (string.contains(";") || string.indexOf("DROP") != -1)
+        if (string.contains(";") || string.indexOf("DROP") != -1 || string.indexOf("--") != -1)
             throw new RuntimeException("Posible inyección de datos");
     }
 
